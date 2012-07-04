@@ -75,8 +75,22 @@
                 }
 
                 // Initialize a Kontagent unique ID so we can keep track of this user.
-                if(!playerData.kontagent_sid) {
-                    playerData.kontagent_sid = Date.getUTC() + Math.pow(2,32);
+                if(typeof wooga.castle.playerData.kontagent_sid === "undefined" || !wooga.castle.playerData.kontagent_sid) {
+                    wooga.castle.playerData.kontagent_sid = (Date.now() + Math.Random() * Math.pow(2,32));
+                    // Consider this an app "installation."
+                    kontagent.trackApplicationAdded(wooga.castle.playerData.kontagent_sid, {},
+                        function() {},
+                        function(error) {
+                            window.alert("Could not send APA message for uid " + wooga.castle.playerData.kontagent_sid + ": " + error);
+                        });
+                } else {
+                    // Consider this an app "page view"
+                    kontagent.trackPageRequest(wooga.castle.playerData.kontagent_sid, {},
+                        function() {},
+                        function(error) {
+                            window.alert("Could not send PGR message for uid " + wooga.castle.playerData.kontagent_sid + ": " + error);
+                        }
+                    )
                 }
             }
 
