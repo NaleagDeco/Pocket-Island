@@ -1,5 +1,5 @@
 /*jslint white:true, browser:true, plusplus:true, nomen:true, vars:true */
-/*global wooga, EJS, $, console */
+/*global wooga, EJS, $, console, kontagent */
 
 (function() {
 
@@ -72,6 +72,11 @@
                     wooga.castle.playerData = JSON.parse(playerData);
                 } else {
                     wooga.castle.playerData = playerData;
+                }
+
+                // Initialize a Kontagent unique ID so we can keep track of this user.
+                if(!playerData.kontagent_sid) {
+                    playerData.kontagent_sid = Date.getUTC() + Math.pow(2,32);
                 }
             }
 
