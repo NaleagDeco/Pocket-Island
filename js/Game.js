@@ -486,15 +486,6 @@
     Game.prototype.buyHandler = function (message) {
         var entity = message.entity;
         this.drain('gold', entity.definition.goldCost);
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
-            'Purchase',
-            {
-                'subtype1': entity.getProperName().replace(/\s/g, '').substring(0,32)
-            },
-            function () {},
-            function(error) {
-                window.alert("Could not send EVT due to " + error);
-            });
         switch (entity.definition["class"]) {
             case "house":
             case "uhouse":
