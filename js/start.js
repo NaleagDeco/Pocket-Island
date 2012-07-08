@@ -73,15 +73,6 @@
                 } else {
                     wooga.castle.playerData = playerData;
                 }
-            } else {
-                // Initialize a Kontagent unique ID so we can keep track of this user.
-                wooga.castle.playerData.kontagent_id = (Date.now() + Math.random() * Math.pow(2,32));
-                // Consider this an app "installation."
-                kontagent.trackApplicationAdded(wooga.castle.playerData.kontagent_id, {},
-                    function() {},
-                    function(error) {
-                        window.alert("Could not send APA message for uid " + wooga.castle.playerData.kontagent_id + ": " + error);
-                    });
             }
 
             setTimeout(function () {

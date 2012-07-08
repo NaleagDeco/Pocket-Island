@@ -1,5 +1,5 @@
 /*jslint white:true, browser:true, plusplus:true, nomen:true, vars:true */
-/*global KontagentApi */
+/*global wooga, KontagentApi */
 
 (function () {
     "use strict";
@@ -34,14 +34,24 @@
         this.subscribe("contract/start", this.trackContractStarted);
         this.subscribe("contract/collect", this.trackContractRewardCollected);
         this.subscribe("castle/upgrade", this.trackCastleUpgraded);
-        this.subscribe("game/ready", this.beginTrackingPages);
+        this.subscribe("game/ready", this.beginTrackingUser);
     };
 
-    Kontagent.prototype.beginTrackingPages = function () {
+    Kontagent.prototype.beginTrackingUser = function () {
+        if (typeof wooga.castle.playerData.kontagent_id === "undefined" || wooga.castle.playerData.kontagent_id === null) {
+            // Initialize a Kontagent unique ID so we can keep track of this user.
+            wooga.castle.playerData.kontagent_id = (Date.now() + Math.random() * Math.pow(2,32));
+            // Consider this an app "installation."
+            this._api_wrapper.trackApplicationAdded(wooga.castle.playerData.kontagent_id, {},
+                function() {},
+                function(error) {
+                    window.alert("Could not send APA message for uid " + wooga.castle.playerData.kontagent_id + ": " + error);
+                });
+        }
         // Once the game starts, we want to regularly send PGR signals to indicate
         // that the user is still playing the game. We use this for session tracking.
         window.setInterval(function () {
-            this._api_wrapper.trackPageRequest(wooga.castle.playerData.kontagent_id, {},
+            Kontagent.instance()._api_wrapper.trackPageRequest(wooga.castle.playerData.kontagent_id, {},
                 function () {
                 },
                 function (error) {
@@ -49,6 +59,7 @@
                 });
         }, KONTAGENT_SESSION_INTERVAL);
     };
+
     Kontagent.prototype.trackPurchase = function(message) {
         this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'purchase',
