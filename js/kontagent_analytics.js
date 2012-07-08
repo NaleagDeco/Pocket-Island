@@ -7,7 +7,6 @@
     var _instance = null;
 
     var Kontagent = function() {
-
         if(_instance) {
             throw 'Kontagent was already initialized';
         }
@@ -115,5 +114,4 @@
                 window.alert("Could not send castle_upgrade EVT due to " + error);
             });
     };
-
 }());
