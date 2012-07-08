@@ -73,13 +73,6 @@
                 } else {
                     wooga.castle.playerData = playerData;
                 }
-
-                // Consider this an app "page view"
-                kontagent.trackPageRequest(wooga.castle.playerData.kontagent_id, {},
-                    function() {},
-                    function(error) {
-                            window.alert("Could not send PGR message for uid " + wooga.castle.playerData.kontagent_id + ": " + error);
-                    });
             } else {
                 // Initialize a Kontagent unique ID so we can keep track of this user.
                 wooga.castle.playerData.kontagent_id = (Date.now() + Math.random() * Math.pow(2,32));

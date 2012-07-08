@@ -4,19 +4,20 @@
 (function () {
     "use strict";
     var KONTAGENT_API_KEY = 'fac6e85e5563431ea06db108b255f6b3';
+    var KONTAGENT_SESSION_INTERVAL = 30 * 1000; //Thirty seconds
     var _instance = null;
 
-    var Kontagent = function() {
-        if(_instance) {
+    var Kontagent = function () {
+        if (_instance) {
             throw 'Kontagent was already initialized';
         }
         _instance = this;
 
-       this._api_wrapper = new KontagentApi(KONTAGENT_API_KEY, {
-           'useTestServer': true,
-           'validateParams': true
-       });
-    }
+        this._api_wrapper = new KontagentApi(KONTAGENT_API_KEY, {
+            'useTestServer':true,
+            'validateParams':true
+        });
+    };
 
     utils.mixin(Kontagent, utils.PubSubMixin);
     utils.mixin(Kontagent, utils.ObservableMixin);
@@ -33,10 +34,23 @@
         this.subscribe("contract/start", this.trackContractStarted);
         this.subscribe("contract/collect", this.trackContractRewardCollected);
         this.subscribe("castle/upgrade", this.trackCastleUpgraded);
+        this.subscribe("game/ready", this.beginTrackingPages);
     };
 
+    Kontagent.prototype.beginTrackingPages = function () {
+        // Once the game starts, we want to regularly send PGR signals to indicate
+        // that the user is still playing the game. We use this for session tracking.
+        window.setInterval(function () {
+            this._api_wrapper.trackPageRequest(wooga.castle.playerData.kontagent_id, {},
+                function () {
+                },
+                function (error) {
+                    window.alert("Could not send PGR message for uid " + wooga.castle.playerData.kontagent_id + ": " + error);
+                });
+        }, KONTAGENT_SESSION_INTERVAL);
+    };
     Kontagent.prototype.trackPurchase = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'purchase',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -48,7 +62,7 @@
     };
 
     Kontagent.prototype.trackLevelUp = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'level_up',
             {
                 'level': message.level
@@ -59,8 +73,8 @@
             });
     };
 
-    Kontagent.prototype.trackTutorialDone = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+    Kontagent.prototype.trackTutorialDone = function() {
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'tutorial_done',
             {},
             function () {},
@@ -69,8 +83,8 @@
             });
     };
 
-    Kontagent.prototype.trackEnemyKilled = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+    Kontagent.prototype.trackEnemyKilled = function() {
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'tutorial_done',
             {},
             function () {},
@@ -92,7 +106,7 @@
     };
 
     Kontagent.prototype.trackContractRewardCollected = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'reward_collected',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -104,7 +118,7 @@
     };
 
     Kontagent.prototype.trackCastleUpgraded = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'castle_upgrade',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
