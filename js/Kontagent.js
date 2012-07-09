@@ -7,6 +7,7 @@
     var KONTAGENT_SESSION_INTERVAL = 30 * 1000; //Thirty seconds
     var _instance = null;
 
+    var utils = wooga.castle.utils;
     var Kontagent = function () {
         if (_instance) {
             throw 'Kontagent was already initialized';
@@ -17,6 +18,7 @@
             'useTestServer':true,
             'validateParams':true
         });
+        this.initializeSubscriptions();
     };
 
     utils.mixin(Kontagent, utils.PubSubMixin);
@@ -34,7 +36,7 @@
         this.subscribe("contract/start", this.trackContractStarted);
         this.subscribe("contract/collect", this.trackContractRewardCollected);
         this.subscribe("castle/upgrade", this.trackCastleUpgraded);
-        this.subscribe("game/ready", this.beginTrackingUser);
+        this.subscribe("have player data", this.beginTrackingUser);
     };
 
     Kontagent.prototype.beginTrackingUser = function () {
@@ -96,7 +98,7 @@
 
     Kontagent.prototype.trackEnemyKilled = function() {
         this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
-            'tutorial_done',
+            'enemy_killed',
             {},
             function () {},
             function(error) {
@@ -105,7 +107,7 @@
     };
 
     Kontagent.prototype.trackContractStarted = function(message) {
-        kontagent.trackEvent(wooga.castle.playerData.kontagent_id,
+        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'contract_started',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -139,4 +141,6 @@
                 window.alert("Could not send castle_upgrade EVT due to " + error);
             });
     };
+
+    wooga.kontagent = new Kontagent();
 }());
