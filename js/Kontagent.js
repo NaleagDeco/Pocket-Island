@@ -28,13 +28,13 @@
     };
 
     Kontagent.prototype.initializeSubscriptions = function() {
-        utils.subscribe("entity/buy", this.trackPurchase);
-        utils.subscribe("player/level-up", this.trackLevelUp);
-        utils.subscribe("tutorial/done", this.trackTutorialDone);
+        wooga.castle.Game.instance().subscribe("entity/buy", this.trackPurchase);
+        wooga.castle.Game.instance().subscribe("player/level-up", this.trackLevelUp);
+        wooga.castle.Game.instance().subscribe("tutorial/done", this.trackTutorialDone);
         wooga.castle.Game.instance().subscribe("enemy/kill", this.trackEnemyKilled);
-        utils.subscribe("contract/start", this.trackContractStarted);
-        utils.subscribe("contract/collect", this.trackContractRewardCollected);
-        utils.subscribe("castle/upgrade", this.trackCastleUpgraded);
+        wooga.castle.Game.instance().subscribe("contract/start", this.trackContractStarted);
+        wooga.castle.Game.instance().subscribe("contract/collect", this.trackContractRewardCollected);
+        wooga.castle.Game.instance().subscribe("castle/upgrade", this.trackCastleUpgraded);
         utils.subscribe("game/ready", this.beginTrackingUser);
     };
 
