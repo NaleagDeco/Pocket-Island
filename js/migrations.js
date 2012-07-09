@@ -105,6 +105,9 @@
                 }
                 return e;
             });
+        }},
+        {version: 13, name: "Create Kontagent User ID for analytics", run: function (user) {
+            user.kontagent_id = user.kontagent_id || (Date.now() + Math.random() * Math.pow(2,32));
         }}
     ];
 }());
