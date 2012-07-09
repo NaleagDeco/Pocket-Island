@@ -1,5 +1,5 @@
 /*jslint white:true, browser:true, plusplus:true, nomen:true, vars:true */
-/*global wooga, EJS, $, console, kontagent */
+/*global wooga, EJS, $, console */
 
 (function() {
 
