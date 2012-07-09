@@ -130,6 +130,7 @@
                 playerData: playerData,
                 entitiesDefinition: wooga.castle.entityDefinitions
             });
+        var kontagent = new wooga.castle.Kontagent();
 
 
         game.subscribe('player/level-up', function () {

@@ -22,7 +22,6 @@
     };
 
     utils.mixin(Kontagent, utils.PubSubMixin);
-    utils.mixin(Kontagent, utils.ObservableMixin);
 
     Kontagent.instance = function() {
         return _instance;
@@ -32,7 +31,7 @@
         utils.subscribe("entity/buy", this.trackPurchase);
         utils.subscribe("player/level-up", this.trackLevelUp);
         utils.subscribe("tutorial/done", this.trackTutorialDone);
-        utils.subscribe("enemy/kill", this.trackEnemyKilled);
+        wooga.castle.Game.instance().subscribe("enemy/kill", this.trackEnemyKilled);
         utils.subscribe("contract/start", this.trackContractStarted);
         utils.subscribe("contract/collect", this.trackContractRewardCollected);
         utils.subscribe("castle/upgrade", this.trackCastleUpgraded);
@@ -138,5 +137,5 @@
             });
     };
 
-    wooga.kontagent = new Kontagent();
+    wooga.castle.Kontagent = Kontagent;
 }());
