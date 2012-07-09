@@ -29,19 +29,19 @@
     };
 
     Kontagent.prototype.initializeSubscriptions = function() {
-        this.subscribe("entity/buy", this.trackPurchase);
-        this.subscribe("player/level-up", this.trackLevelUp);
-        this.subscribe("tutorial/done", this.trackTutorialDone);
-        this.subscribe("enemy/kill", this.trackEnemyKilled);
-        this.subscribe("contract/start", this.trackContractStarted);
-        this.subscribe("contract/collect", this.trackContractRewardCollected);
-        this.subscribe("castle/upgrade", this.trackCastleUpgraded);
-        this.subscribe("have player data", this.beginTrackingUser);
+        utils.subscribe("entity/buy", this.trackPurchase);
+        utils.subscribe("player/level-up", this.trackLevelUp);
+        utils.subscribe("tutorial/done", this.trackTutorialDone);
+        utils.subscribe("enemy/kill", this.trackEnemyKilled);
+        utils.subscribe("contract/start", this.trackContractStarted);
+        utils.subscribe("contract/collect", this.trackContractRewardCollected);
+        utils.subscribe("castle/upgrade", this.trackCastleUpgraded);
+        utils.subscribe("game/ready", this.beginTrackingUser);
     };
 
     Kontagent.prototype.beginTrackingUser = function () {
         // Consider this an app "installation."
-        this._api_wrapper.trackApplicationAdded(wooga.castle.playerData.kontagent_id, {},
+        Kontagent.instance()._api_wrapper.trackApplicationAdded(wooga.castle.playerData.kontagent_id, {},
             function() {},
             function(error) {
                 window.alert("Could not send APA message for uid " + wooga.castle.playerData.kontagent_id + ": " + error);
@@ -59,7 +59,7 @@
     };
 
     Kontagent.prototype.trackPurchase = function(message) {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'purchase',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -71,7 +71,7 @@
     };
 
     Kontagent.prototype.trackLevelUp = function(message) {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'level_up',
             {
                 'level': message.level
@@ -83,7 +83,7 @@
     };
 
     Kontagent.prototype.trackTutorialDone = function() {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'tutorial_done',
             {},
             function () {},
@@ -93,7 +93,7 @@
     };
 
     Kontagent.prototype.trackEnemyKilled = function() {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'enemy_killed',
             {},
             function () {},
@@ -103,7 +103,7 @@
     };
 
     Kontagent.prototype.trackContractStarted = function(message) {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'contract_started',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -115,7 +115,7 @@
     };
 
     Kontagent.prototype.trackContractRewardCollected = function(message) {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'reward_collected',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
@@ -127,7 +127,7 @@
     };
 
     Kontagent.prototype.trackCastleUpgraded = function(message) {
-        this._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
+        Kontagent.instance()._api_wrapper.trackEvent(wooga.castle.playerData.kontagent_id,
             'castle_upgrade',
             {
                 'subtype1': message.entity.getProperName().replace(/\s/g, '').substring(0,32)
