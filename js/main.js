@@ -130,6 +130,8 @@
                 playerData: playerData,
                 entitiesDefinition: wooga.castle.entityDefinitions
             });
+        // TODO Need to implement this here becase I have unfortunate dependencies
+        // on Game that I need to eventually sort out
         var kontagent = new wooga.castle.Kontagent();
 
 
